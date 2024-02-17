@@ -1,0 +1,86 @@
+from datetime import datetime, timedelta
+
+class Ajanda:
+    def __init__(self):
+        self.randevular = {}
+
+    def randevu_ekle(self, tarih, baslangic_saat, bitis_saat, randevu):
+        try:
+            baslangic_tarih_saat = datetime.strptime(f"{tarih} {baslangic_saat}", "%d.%m.%Y %H:%M")
+            bitis_tarih_saat = datetime.strptime(f"{tarih} {bitis_saat}", "%d.%m.%Y %H:%M")
+            
+            # Randevu başlangıç ve bitiş saatleri kontrolü
+            if not ("08:00" <= baslangic_saat <= "22:00" and "08:00" <= bitis_saat <= "22:00"):
+                print("Randevu saatleri 08:00 ile 22:00 arasında olmalıdır.")
+                return
+
+            # Randevu başlangıç saati, bitiş saatinden önce olmalıdır
+            if baslangic_tarih_saat >= bitis_tarih_saat:
+                print("Randevu başlangıç saati, bitiş saatinde önce olmalıdır.")
+                return
+
+            # Randevu en az 1 saat sürmelidir
+            if bitis_tarih_saat - baslangic_tarih_saat < timedelta(hours=1):
+                print("Randevu en az 1 saat sürmelidir. Lütfen geçerli bir bitiş saati seçin.")
+                return
+
+            # Aynı tarihteki randevuların çakışıp çakışmadığının kontrolü
+            if tarih in self.randevular:
+                for randevu_bilgisi in self.randevular[tarih]:
+                    baslangic_exist = randevu_bilgisi['baslangic_tarih_saat']
+                    bitis_exist = randevu_bilgisi['bitis_tarih_saat']
+
+                    if baslangic_tarih_saat < bitis_exist and bitis_tarih_saat > baslangic_exist:
+                        print("Bu saat diliminde başka bir randevu var. Lütfen başka bir saat seçin.")
+                        return
+
+            # Randevuyu ekleyerek ajandaya kaydet
+            if tarih not in self.randevular:
+                self.randevular[tarih] = []
+            self.randevular[tarih].append({
+                'baslangic_tarih_saat': baslangic_tarih_saat,
+                'bitis_tarih_saat': bitis_tarih_saat,
+                'randevu': randevu
+            })
+            print(f"Randevu başarıyla eklendi: {randevu} - {tarih} {baslangic_saat} - {tarih} {bitis_saat}")
+
+        except ValueError:
+            print("Geçersiz tarih veya saat formatı. Lütfen tekrar deneyin.")
+
+    def randevulari_goruntule(self):
+        if not self.randevular:
+            print("Henüz randevu bulunmamaktadır.")
+            return
+
+        print("\nAjandadaki Randevular:")
+        for tarih, randevu_listesi in self.randevular.items():
+            for randevu_bilgisi in randevu_listesi:
+                print(f"{randevu_bilgisi['randevu']} - {tarih} {randevu_bilgisi['baslangic_tarih_saat'].strftime('%H:%M')} - {tarih} {randevu_bilgisi['bitis_tarih_saat'].strftime('%H:%M')}")
+
+# Kullanıcıdan giriş almak için bir döngü
+ajanda = Ajanda()
+
+while True:
+    print("\n1. Randevu Ekle")
+    print("2. Randevuları Görüntüle")
+    print("3. Çıkış")
+
+    secim = input("Lütfen bir seçenek seçin (1/2/3): ")
+
+    if secim == "1":
+        tarih = input("Tarih (GG.AA.YYYY): ")
+        baslangic_saat = input("Başlangıç Saat (SS:DD): ")
+        bitis_saat = input("Bitiş Saat (SS:DD): ")
+        randevu = input("Randevu: ")
+
+        ajanda.randevu_ekle(tarih, baslangic_saat, bitis_saat, randevu)
+
+    elif secim == "2":
+        ajanda.randevulari_goruntule()
+
+    elif secim == "3":
+        print("Programdan çıkılıyor. İyi günler!")
+        break
+
+    else:
+        print("Geçersiz bir seçenek. Lütfen tekrar deneyin.")

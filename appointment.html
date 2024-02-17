@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduler</title>
+</head>
+<body>
+
+<h2>Appointment Scheduler</h2>
+
+<form action="/submit_appointment" method="post">
+    <label for="tarih">Tarih (GG.AA.YYYY): </label>
+    <input type="text" id="tarih" name="tarih" required><br>
+
+    <label for="baslangic_saat">Başlangıç Saat (SS:DD): </label>
+    <input type="text" id="baslangic_saat" name="baslangic_saat" required><br>
+
+    <label for="bitis_saat">Bitiş Saat (SS:DD): </label>
+    <input type="text" id="bitis_saat" name="bitis_saat" required><br>
+
+    <label for="randevu">Randevu: </label>
+    <input type="text" id="randevu" name="randevu" required><br>
+
+    <input type="submit" value="Randevu Ekle">
+</form>
+
+</body>
+</html>
+
